@@ -1,0 +1,17 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: no-commit-to-branch
+    -   id: check-json
+    -   id: check-yaml
+        exclude: tests/test_data/valid_config_file/invalid_yaml_config.yml # Invalid yml needed for testing
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.5
+    hooks:
+    - id: ruff
+      args: [ --fix ]
+    - id: ruff-format

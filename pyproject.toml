@@ -1,0 +1,131 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "everest"
+description = "A tool to find optimal well planning and production strategies by utilizing an ensemble of reservoir models."
+readme = "README.md"
+authors = [
+    { name = "Equinor", email = "fg_sib-scout@equinor.com" },
+    { name = "TNO" },
+]
+dynamic = ["version"]
+classifiers = [
+    "Programming language :: Python",
+    "Programming language :: Python :: 3.8",
+]
+dependencies = [
+    "python-dateutil",
+    "Jinja2>=2.10",
+    "matplotlib",
+    "pandas",
+    "progressbar2",
+    "pydantic",
+    "ruamel.yaml",
+    "seaborn",
+    "flask",
+    "cryptography",
+    "dnspython",
+    "qtpy",
+    "pluggy",
+    "decorator",
+    "resdata",
+    "ert>=10.1.0b0",
+    "PyQt5",
+    "colorama",
+    "numpy<2",
+    "ropt[pandas]>=0.2.1",
+    "ropt-dakota>=0.2",
+    "seba-sqlite",
+    "setuptools; python_version >= '3.12'",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/equinor/everest"
+"Repository" = "https://github.com/equinor/everest"
+"Bug Tracker" = "https://github.com/equinor/everest/issues"
+
+[project.optional-dependencies]
+test = [
+    "hypothesis",
+    "decorator",
+    "pytest-rerunfailures",
+    "mock",
+    "pytest",
+    "pytest-qt>=4",
+    "pytest-mock",
+    "pytest-xdist",
+    "oil_reservoir_synthesizer",
+]
+style = [# keep insync with `style.yml` workflow
+    "pre-commit",
+    "flake8",
+    "pylint",
+    "mypy",
+    "types-python-dateutil",
+    "types-requests",
+    "types-setuptools",
+    "types-decorator",
+]
+
+docs = [
+    "sphinx",
+    "sphinx-argparse",
+]
+
+[project.scripts]
+everest = "everest.bin.main:start_everest"
+everserver = "everest.detached.jobs.everserver:main"
+recovery_factor = "everest.jobs.scripts.recovery_factor:main"
+render = "everest.jobs.scripts.render:main"
+wdcompl = "everest.jobs.scripts.wdcompl:main"
+wddatefilter = "everest.jobs.scripts.wddatefilter:main"
+wdfilter = "everest.jobs.scripts.wdfilter:main"
+wdreorder = "everest.jobs.scripts.wdreorder:main"
+wdset = "everest.jobs.scripts.wdset:main"
+wdupdate = "everest.jobs.scripts.wdupdate:main"
+
+[tool.setuptools]
+packages = [
+    "everest",
+    "everest.api",
+    "everest.bin",
+    "everest.data",
+    "everest.detached",
+    "everest.docs",
+    "everest.jobs",
+    "everest.linting",
+    "everest.optimizer",
+    "everest.plugins",
+    "everest.queue_driver",
+    "everest.simulator",
+    "everest.templates",
+    "everest.util",
+    "ieverest",
+    "ieverest.bin",
+    "ieverest.io",
+    "ieverest.widgets",
+]
+
+[tool.setuptools.package-data]
+everest = ["data/**/*", "*.tmpl", "detached/jobs/everserver"]
+ieverest = ["*.ui"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+markers = [
+    "integration_test",
+    "simulation_test",
+    "ui_test",
+    "redundant_test",
+    "fails_on_macos_github_workflow", # Tests marked fail due to gui-related issues
+]
+log_cli = "false"
+asyncio_mode = "auto"
+
+[tool.setuptools_scm]
+write_to = "everest/version.py"
+
+[tool.setuptools.dynamic]
+version = { attr = "everest.version.__version__" }

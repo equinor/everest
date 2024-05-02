@@ -1,0 +1,43 @@
+name: style
+
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  style_and_lint:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+      - name: Install style dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools
+          python -m pip install black flake8 isort pylint pre-commit
+      - name: Run flake8
+        if: ${{ always() }}
+        run: |
+          flake8
+      - name: Run pylint
+        if: ${{ always() }}
+        run: |
+          pylint everest ieverest tests
+      - name: Install and Run mypy
+        if: ${{ always() }}
+        run: |
+          pip install mypy \
+          types-python-dateutil \
+          types-requests \
+          types-setuptools \
+          types-decorator && \
+          mypy everest
+      - name: Run style check
+        if: ${{ always() }}
+        run: |
+          SKIP=no-commit-to-branch pre-commit run --all-files --show-diff-on-failure
