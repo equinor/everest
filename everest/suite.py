@@ -220,7 +220,7 @@ class _MonitorThread(threading.Thread):
                 jobs_progress.append([])
             else:
                 jobs: List[JobProgress] = []
-                for fms in progress_queue.steps:
+                for fms in progress_queue._fm_steps:
                     if (
                         not self._display_all_jobs
                         and fms.name in everest.jobs.shell_commands
