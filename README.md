@@ -1,5 +1,4 @@
 [![Python](https://github.com/equinor/everest/workflows/Python%20package/badge.svg)](https://github.com/equinor/everest/actions?query=workflow%3A%22Python+package%22)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Style](https://github.com/equinor/everest/workflows/Style/badge.svg)](https://github.com/equinor/everest/actions?query=workflow%3AStyle)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -12,7 +11,7 @@ The primary goal of the Everest tool is to find *optimal* well planning and prod
 ## Requirements
 
 Python version:
-Everest supports Python version 3.8, 3.10
+Everest supports Python version 3.8, 3.9, 3.10, 3.11, 3.12
 
 In order to build, test and run Everest, a number of Python libraries must be available.
 
