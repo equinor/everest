@@ -60,7 +60,6 @@ test = [
 ]
 style = [# keep insync with `style.yml` workflow
     "pre-commit",
-    "flake8",
     "pylint",
     "mypy",
     "types-python-dateutil",
@@ -129,3 +128,16 @@ write_to = "everest/version.py"
 
 [tool.setuptools.dynamic]
 version = { attr = "everest.version.__version__" }
+
+[tool.ruff]
+src = ["everest"]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+  "W",   # pycodestyle
+  "I",   # isort
+  "B",   # flake-8-bugbear
+  "SIM", # flake-8-simplify
+  "F",   # pyflakes
+]
