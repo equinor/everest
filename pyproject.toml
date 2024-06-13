@@ -140,4 +140,6 @@ select = [
   "B",   # flake-8-bugbear
   "SIM", # flake-8-simplify
   "F",   # pyflakes
+  "C4",  # flake8-comprehensions
+  "NPY", # numpy specific rules
 ]
