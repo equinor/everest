@@ -1,13 +1,43 @@
-from typing import List, Literal, Optional
+from itertools import chain
+from typing import Any, List, Literal, Optional, Tuple, Union
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field, model_validator
+from ropt.enums import PerturbationType, VariableType
+from typing_extensions import Annotated, Self, TypeAlias
 
-from .control_variable_config import ControlVariableConfig
+from .control_variable_config import (
+    ControlVariableConfig,
+    ControlVariableGuessListConfig,
+)
 from .sampler_config import SamplerConfig
+from .validation_utils import (
+    control_variables_validation,
+    no_dots_in_string,
+    unique_items,
+    valid_range,
+)
+
+ControlVariable: TypeAlias = Union[
+    List[ControlVariableConfig], List[ControlVariableGuessListConfig]
+]
+
+
+def _all_or_no_index(variables: ControlVariable) -> ControlVariable:
+    if isinstance(variables[-1], ControlVariableGuessListConfig):
+        return variables
+
+    if len({getattr(variable, "index", None) is None for variable in variables}) != 1:
+        raise ValueError(
+            "Index should be given either for all of the variables or for none"
+            " of them"
+        )
+    return variables
 
 
 class ControlConfig(BaseModel):
-    name: str = Field(description="Control name")
+    name: Annotated[str, AfterValidator(no_dots_in_string)] = Field(
+        description="Control name"
+    )
     type: Literal["well_control", "generic_control"] = Field(
         description="""
 Only two allowed control types are accepted
@@ -19,9 +49,11 @@ Only two allowed control types are accepted
  customized optimization jobs.
 """
     )
-    variables: List[ControlVariableConfig] = Field(
-        description="List of control variables"
-    )
+    variables: Annotated[
+        ControlVariable,
+        AfterValidator(_all_or_no_index),
+        AfterValidator(unique_items),
+    ] = Field(description="List of control variables", min_length=1)
     initial_guess: Optional[float] = Field(
         default=None,
         description="""
@@ -30,8 +62,8 @@ defined will be assigned this value. Individual initial_guess values in the cont
 variables will overwrite this value.
 """,
     )
-    control_type: Optional[Literal["real", "integer"]] = Field(
-        default=None,
+    control_type: Literal["real", "integer"] = Field(
+        default="real",
         description="""
 The type of the controls for the control group. Individual control types in the
 control variables will override this value. Set to "integer" for discrete
@@ -46,8 +78,8 @@ If `True`, all variables in this control group will be optimized. If set to `Fal
 the value of the variables will remain fixed.
 """,
     )
-    auto_scale: Optional[bool] = Field(
-        default=None,
+    auto_scale: bool = Field(
+        default=False,
         description="""
 Can be set to true to re-scale controls from the range
 defined by [min, max] to the range defined by
@@ -74,8 +106,8 @@ The initial guess for both the group and the individual variables needs to be co
 in the resulting [min, max] range
 """,
     )
-    perturbation_type: Optional[Literal["absolute", "relative"]] = Field(
-        default=None,
+    perturbation_type: Literal["absolute", "relative"] = Field(
+        default="absolute",
         description="""
 Example: absolute or relative
 Specifies the perturbation type for a set of controls of a certain type.  The
@@ -104,7 +136,9 @@ of values also cause issues.
 NOTE: In most cases this should not be configured, and the default value should be used.
         """,
     )
-    scaled_range: Optional[List[float]] = Field(
+    scaled_range: Annotated[
+        Optional[Tuple[float, float]], AfterValidator(valid_range)
+    ] = Field(
         default=None,
         description="""
 Can be used to set the range of the control values
@@ -133,79 +167,53 @@ sampler to use the same perturbations for each realization.
         """,
     )
 
-    @field_validator("name")
-    @classmethod
-    def validate_no_dots_in_name(cls, name: str) -> str:  # pylint: disable=E0213
-        if "." in name:
-            raise ValueError("Control name can not contain any dots (.)")
-        return name
+    @property
+    def ropt_perturbation_type(self) -> PerturbationType:
+        return PerturbationType[self.perturbation_type.upper()]
 
-    @field_validator("scaled_range")
-    @classmethod
-    def validate_is_range(cls, scaled_range):  # pylint: disable=E0213
-        if len(scaled_range) != 2 or scaled_range[0] >= scaled_range[1]:
-            raise ValueError("scaled_range must be a valid range [a, b], where a < b.")
-        return scaled_range
+    @property
+    def ropt_control_type(self) -> VariableType:
+        return VariableType[self.control_type.upper()]
+
+    @property
+    def has_auto_scale(self) -> bool:
+        return self.auto_scale or any(
+            variable.auto_scale for variable in self.variables
+        )
 
     @model_validator(mode="after")
-    def validate_variables(self) -> "ControlConfig":
-        group_min = self.min
-        group_max = self.max
-        group_initial_guess = self.initial_guess
-        error = []
-        variables = self.variables
-        if variables is None:
+    def validate_variables(self) -> Self:
+        if self.variables is None:
             return self
-        if not variables:
-            error.append("Empty variables data")
-        has_index = [v.index is not None for v in variables]
-        if any(has_index) and not all(has_index):
-            error.append(
-                "Index should be given either for all of the variables or for none"
-                " of them"
+
+        if error := list(
+            chain.from_iterable(
+                control_variables_validation(
+                    variable.name,
+                    self.min if variable.min is None else variable.min,
+                    self.max if variable.max is None else variable.max,
+                    (
+                        self.initial_guess
+                        if variable.initial_guess is None
+                        else variable.initial_guess
+                    ),
+                )
+                for variable in self.variables
             )
-
-        namespace = [(v.name, v.index) for v in variables]
-        if len(namespace) != len(set(namespace)):
-            error.append("Variable name or name-index combination has to be unique")
-
-        for variable in variables:
-            v_min = group_min if variable.min is None else variable.min
-            v_max = group_max if variable.max is None else variable.max
-            v_initial_guess = (
-                group_initial_guess
-                if variable.initial_guess is None
-                else variable.initial_guess
-            )
-            if v_min is None:
-                error.append(
-                    f"Variable {variable.name} must define min value either at"
-                    f" control level or variable level"
-                )
-            if v_max is None:
-                error.append(
-                    f"Variable {variable.name} must define max value either at"
-                    f" control level or variable level"
-                )
-            if v_initial_guess is None:
-                error.append(
-                    f"Variable {variable.name} must define initial_guess value either"
-                    f" at control level or variable level"
-                )
-
-            if (
-                v_min is not None
-                and v_max is not None
-                and v_initial_guess is not None
-                and not v_min <= v_initial_guess <= v_max
-            ):
-                error.append(
-                    f"Variable {variable.name} must respect min <= initial_guess <= max"
-                )
-        if error:
+        ):
             raise ValueError(error)
         return self
 
-    model_config = ConfigDict(
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, self.__class__) and other.name == self.name
+
+    @property
+    def uniqueness(self) -> str:
+        return "name"
+
+    model_config = ConfigDict(  # type: ignore
         extra="forbid",
     )

@@ -1,13 +1,17 @@
 import itertools
 import numbers
 import os
+from copy import deepcopy
 from typing import List
 
 import pytest
 from everest import ConfigKeys
 from everest.config import EverestConfig
 from everest.config.control_config import ControlConfig
-from everest.config.control_variable_config import ControlVariableConfig
+from everest.config.control_variable_config import (
+    ControlVariableConfig,
+    ControlVariableGuessListConfig,
+)
 from everest.config.input_constraint_config import InputConstraintConfig
 from everest.config.well_config import WellConfig
 from pydantic import ValidationError
@@ -49,7 +53,7 @@ def test_controls_initialization():
     )
     with pytest.raises(
         ValidationError,
-        match=" Control names must be unique",
+        match=r"Subfield\(s\) `name` must be unique",
     ):
         EverestConfig.model_validate(config.model_dump(exclude_none=True))
 
@@ -119,7 +123,7 @@ def test_variable_name_index_validation():
     # Not valid equal names
     config.controls[0].variables[1].name = "w00"
     with pytest.raises(
-        ValidationError, match="name-index combination has to be unique"
+        ValidationError, match=r"Subfield\(s\) `name-index` must be unique"
     ):
         EverestConfig.model_validate(config.model_dump(exclude_none=True))
     # Not valid index inconsistency
@@ -135,7 +139,7 @@ def test_variable_name_index_validation():
     for v in config.controls[0].variables:
         v.index = 0
     with pytest.raises(
-        ValidationError, match="name-index combination has to be unique"
+        ValidationError, match=r"Subfield\(s\) `name-index` must be unique"
     ):
         EverestConfig.model_validate(config.model_dump(exclude_none=True))
 
@@ -237,3 +241,42 @@ def test_control_none_well_variable_name():
         match="Variable name does not match any well name",
     ):
         EverestConfig.model_validate(config.to_dict())
+
+
+def test_control_variable_types(control_config: ControlConfig):
+    if isinstance(control_config.variables[0], ControlVariableConfig):
+        assert all(
+            isinstance(variable, ControlVariableConfig)
+            for variable in control_config.variables
+        )
+    else:
+        assert all(
+            isinstance(variable, ControlVariableGuessListConfig)
+            for variable in control_config.variables
+        )
+
+
+@pytest.mark.parametrize(
+    "variables",
+    (
+        pytest.param(
+            [
+                {"name": "w00", "initial_guess": 0.0626, "index": 0},
+                {"name": "w00", "initial_guess": [0.063, 0.0617, 0.0621]},
+            ],
+            id="same name",
+        ),
+        pytest.param(
+            [
+                {"name": "w00", "initial_guess": 0.0626, "index": 0},
+                {"name": "w01", "initial_guess": [0.0627, 0.0631, 0.0618, 0.0622]},
+            ],
+            id="different name",
+        ),
+    ),
+)
+def test_control_bad_variables(variables, control_data_no_variables: dict):
+    data = deepcopy(control_data_no_variables)
+    data["variables"] = variables
+    with pytest.raises(ValidationError, match="3 validation errors"):
+        ControlConfig.model_validate(data)

@@ -2,7 +2,7 @@ import os
 import pathlib
 import re
 from pathlib import Path
-from typing import List, Union
+from typing import Any, Dict, List, Union
 
 import pytest
 from everest.config import EverestConfig, ModelConfig
@@ -192,7 +192,7 @@ def test_that_duplicate_control_names_raise_error():
             ],
         )
 
-    assert has_error(e.value, match="Control names must be unique")
+    assert has_error(e.value, match="(.*)`name` must be unique")
 
 
 def test_that_dot_not_in_control_names():
@@ -238,23 +238,52 @@ def test_that_scaled_range_is_valid_range():
 
     assert has_error(
         e.value,
-        match="(.*)must be a valid range \\[a, b\\], where a < b.",
+        match=r"(.*)must be a valid range \[a, b\], where a < b.",
     )
 
 
-def test_that_invalid_control_variables_have_multiple_error_msgs():
+@pytest.mark.parametrize(
+    "variables, count",
+    (
+        pytest.param(
+            [
+                {  # upper bound (max)
+                    "name": "w00",
+                    "min": 0,
+                    "max": 0.1,
+                    "initial_guess": 1.09,
+                },
+                {  # lower bound (min)
+                    "name": "w01",
+                    "min": 0.5,
+                    "max": 1,
+                    "initial_guess": 0.29,
+                },
+            ],
+            2,
+            id="value",
+        ),
+        pytest.param(
+            [
+                {
+                    "name": "w00",
+                    "min": 0,
+                    "max": 0.1,
+                    "initial_guess": [1.09, 0.29],
+                },
+            ],
+            1,
+            id="vector",
+        ),
+    ),
+)
+def test_that_invalid_control_initial_guess_outside_bounds(
+    variables: List[Dict[str, Any]], count: int
+):
     with pytest.raises(ValueError) as e:
         EverestConfig.with_defaults(
             controls=[
-                {
-                    "name": "group_0",
-                    "type": "well_control",
-                    "variables": [
-                        {"name": "w00", "min": 0, "max": 0.1, "initial_guess": 1.09},
-                        {"name": "w00", "min": 0, "max": 0.1, "initial_guess": 1.29},
-                        {"name": "w01"},
-                    ],
-                }
+                {"name": "group_0", "type": "well_control", "variables": variables}
             ]
         )
 
@@ -262,15 +291,76 @@ def test_that_invalid_control_variables_have_multiple_error_msgs():
         len(
             all_errors(
                 e.value,
-                match="must respect min <= initial_guess <= max",
+                match=r"must respect \d\.\d <= initial_guess <= \d\.\d",
             )
         )
-        == 2
+        == count
     )
+
+
+@pytest.mark.parametrize(
+    "variables, unique_key",
+    (
+        pytest.param(
+            [
+                {"name": "w00", "initial_guess": 0.05},
+                {"name": "w00", "initial_guess": 0.09},
+            ],
+            "name-index",
+            id="name no index",
+        ),
+        pytest.param(
+            [
+                {"name": "w00", "index": 1, "initial_guess": 0.05},
+                {"name": "w00", "index": 1, "initial_guess": 0.09},
+            ],
+            "name-index",
+            id="name and index",
+        ),
+        pytest.param(
+            [
+                {"name": "w00", "initial_guess": [0.05, 0.09]},
+                {"name": "w00", "initial_guess": [0.03, 0.07]},
+            ],
+            "name",
+            id="vector",
+        ),
+    ),
+)
+def test_that_invalid_control_unique_entry(variables, unique_key):
+    with pytest.raises(ValueError) as e:
+        EverestConfig.with_defaults(
+            controls=[
+                {
+                    "name": "group_0",
+                    "type": "well_control",
+                    "max": 0,
+                    "min": 0.1,
+                    "variables": variables,
+                }
+            ]
+        )
+
     assert has_error(
         e.value,
-        match="(.*)name or name-index combination has to be unique",
+        match=f"(.*)`{unique_key}` must be unique",
     )
+
+
+def test_that_invalid_control_undefined_fields():
+    with pytest.raises(ValueError) as e:
+        EverestConfig.with_defaults(
+            controls=[
+                {
+                    "name": "group_0",
+                    "type": "well_control",
+                    "variables": [
+                        {"name": "w00"},
+                    ],
+                }
+            ]
+        )
+
     for case in ["min", "max", "initial_guess"]:
         assert has_error(
             e.value,

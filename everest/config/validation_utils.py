@@ -1,11 +1,12 @@
 import errno
 import os
 import tempfile
+from collections import Counter
 from itertools import chain
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, Sequence, Tuple, TypeVar, Union
 
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from everest.config.install_data_config import InstallDataConfig
 from everest.util.forward_models import (
@@ -18,6 +19,10 @@ from .install_job_config import InstallJobConfig
 
 if TYPE_CHECKING:
     from pydantic_core import ErrorDetails
+_VARIABLE_ERROR_MESSAGE = (
+    "Variable {name} must define {variable_type} value either"
+    " at control level or variable level"
+)
 
 
 class InstallDataContext:
@@ -55,6 +60,91 @@ class InstallDataContext:
         if self._temp_dir:
             self._temp_dir.cleanup()
         os.chdir(self._cwd)
+
+
+def control_variables_validation(
+    name: str,
+    _min: Optional[float],
+    _max: Optional[float],
+    initial_guess: Union[float, List[float], None],
+) -> List[str]:
+    error = []
+    if _min is None:
+        error.append(_VARIABLE_ERROR_MESSAGE.format(name=name, variable_type="min"))
+    if _max is None:
+        error.append(_VARIABLE_ERROR_MESSAGE.format(name=name, variable_type="max"))
+    if initial_guess is None:
+        error.append(
+            _VARIABLE_ERROR_MESSAGE.format(name=name, variable_type="initial_guess")
+        )
+    if isinstance(initial_guess, float):
+        initial_guess = [initial_guess]
+    if (
+        _min is not None
+        and _max is not None
+        and (
+            msg := ", ".join(
+                str(guess) for guess in initial_guess or [] if not _min <= guess <= _max
+            )
+        )
+    ):
+        error.append(
+            f"Variable {name} must respect {_min} <= initial_guess <= {_max}: {msg}"
+        )
+    return error
+
+
+def no_dots_in_string(value: str) -> str:
+    if "." in value:
+        raise ValueError("Variable name can not contain any dots (.)")
+    return value
+
+
+T = TypeVar("T", bound=BaseModel)
+
+
+def _duplicate_string(items: Sequence[T]) -> str:
+    def duplicate_values(item: T) -> str:
+        return ", ".join(
+            f"{key}: {getattr(item, key) or 'null'}"
+            for key in item.uniqueness.split("-")  # type: ignore
+        )
+
+    return ", ".join(
+        f"'{duplicate_values(item)}' ({count} occurrences)"
+        for item, count in Counter(items).items()
+        if count > 1
+    )
+
+
+def uniform_variables(items: Sequence[T]) -> Sequence[T]:
+    if (
+        len(
+            {
+                len(variable.initial_guess)  # type: ignore
+                for variable in items
+                if isinstance(variable.initial_guess, list)  # type: ignore
+            }
+        )
+        > 1
+    ):
+        raise ValueError("All initial_guess list must be the same length")
+    return items
+
+
+def unique_items(items: Sequence[T]) -> Sequence[T]:
+    if duplicates := _duplicate_string(items):
+        raise ValueError(
+            f"Subfield(s) `{items[0].uniqueness}` must be unique. "  # type: ignore
+            f"Detected multiple occurrences of the following {duplicates}"
+        )
+    return items
+
+
+def valid_range(range_value: Tuple[float, float]):
+    if range_value[0] >= range_value[1]:
+        raise ValueError("scaled_range must be a valid range [a, b], where a < b.")
+    return range_value
 
 
 def check_path_valid(path: str):

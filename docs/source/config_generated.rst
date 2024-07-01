@@ -63,7 +63,7 @@ a group of control variables
 
 
 **variables (required)**
-    Type: *List[ControlVariableConfig]*
+    Type: *Union[List[ControlVariableConfig], List[ControlVariableGuessListConfig]]*
 
     List of control variables
 
@@ -73,26 +73,12 @@ a group of control variables
         Control variable name
 
 
-    **initial_guess (optional)**
-        Type: *Optional[float]*
-
-
-        Starting value for the control variable, if given needs to be in the interval [min, max]
-
-
     **control_type (optional)**
         Type: *Optional[Literal['real', 'integer']]*
 
 
         The type of control. Set to "integer" for discrete optimization. This may be
         ignored if the algorithm that is used does not support different control types.
-
-
-    **index (optional)**
-        Type: *Optional[NonNegativeInt]*
-
-
-        Index should be given either for all of the variables or for none of them
 
 
     **enabled (optional)**
@@ -112,7 +98,7 @@ a group of control variables
 
 
     **scaled_range (optional)**
-        Type: *Optional[List[float]]*
+        Type: *Optional[Tuple[float, float]]*
 
 
         Can be used to set the range of the variable values
@@ -158,7 +144,7 @@ a group of control variables
         The backend used by Everest for sampling points
 
         **backend (optional)**
-            Type: *Optional[str]*
+            Type: *str*
 
             The backend used by Everest for sampling points.
 
@@ -167,7 +153,7 @@ a group of control variables
 
 
 
-        **backend_options (optional)**
+        **options (optional)**
             Type: *Optional[Mapping[str, Any]]*
 
 
@@ -178,7 +164,7 @@ a group of control variables
 
 
         **method (optional)**
-            Type: *Optional[str]*
+            Type: *str*
 
             The sampling method or distribution used by the sampler backend.
 
@@ -188,6 +174,12 @@ a group of control variables
 
             Whether to share perturbations between realizations.
 
+
+
+    **initial_guess (optional)**
+        Type: *List[float]*
+
+        List of Starting values for the control variable
 
 
 
@@ -201,7 +193,7 @@ a group of control variables
 
 
 **control_type (optional)**
-    Type: *Optional[Literal['real', 'integer']]*
+    Type: *Literal['real', 'integer']*
 
 
     The type of the controls for the control group. Individual control types in the
@@ -219,7 +211,7 @@ a group of control variables
 
 
 **auto_scale (optional)**
-    Type: *Optional[bool]*
+    Type: *bool*
 
 
     Can be set to true to re-scale controls from the range
@@ -251,7 +243,7 @@ a group of control variables
 
 
 **perturbation_type (optional)**
-    Type: *Optional[Literal['absolute', 'relative']]*
+    Type: *Literal['absolute', 'relative']*
 
 
     Example: absolute or relative
@@ -285,7 +277,7 @@ a group of control variables
 
 
 **scaled_range (optional)**
-    Type: *Optional[List[float]]*
+    Type: *Optional[Tuple[float, float]]*
 
 
     Can be used to set the range of the control values
@@ -316,7 +308,7 @@ a group of control variables
 
 
     **backend (optional)**
-        Type: *Optional[str]*
+        Type: *str*
 
         The backend used by Everest for sampling points.
 
@@ -325,7 +317,7 @@ a group of control variables
 
 
 
-    **backend_options (optional)**
+    **options (optional)**
         Type: *Optional[Mapping[str, Any]]*
 
 
@@ -336,7 +328,7 @@ a group of control variables
 
 
     **method (optional)**
-        Type: *Optional[str]*
+        Type: *str*
 
         The sampling method or distribution used by the sampler backend.
 
