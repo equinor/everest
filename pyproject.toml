@@ -31,7 +31,7 @@ dependencies = [
     "pluggy",
     "decorator",
     "resdata",
-    "ert>=10.2.0b7",
+    "ert>=10.2.0b12",
     "PyQt5",
     "colorama",
     "numpy<2",
@@ -135,11 +135,11 @@ line-length = 88
 
 [tool.ruff.lint]
 select = [
-  "W",   # pycodestyle
-  "I",   # isort
-  "B",   # flake-8-bugbear
-  "SIM", # flake-8-simplify
-  "F",   # pyflakes
-  "C4",  # flake8-comprehensions
-  "NPY", # numpy specific rules
+    "W", # pycodestyle
+    "I", # isort
+    "B", # flake-8-bugbear
+    "SIM", # flake-8-simplify
+    "F", # pyflakes
+    "C4", # flake8-comprehensions
+    "NPY", # numpy specific rules
 ]
