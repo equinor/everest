@@ -71,6 +71,8 @@ style = [# keep insync with `style.yml` workflow
 docs = [
     "sphinx",
     "sphinx-argparse",
+    "sphinx-copybutton",
+    "furo",
 ]
 
 [project.scripts]
