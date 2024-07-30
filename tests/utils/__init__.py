@@ -36,6 +36,17 @@ def skipif_no_simulator(function):
     )(function)
 
 
+def skipif_no_everest_models(function):
+    """Decorator to skip a test if everest-models is not available
+    """
+    skip = False
+    try:
+        import everest_models
+    except ImportError:
+        skip = True
+    return pytest.mark.skipif(skip, reason="everest-models not found")(function)
+
+
 def hide_opm(function):
     """Decorator for faking that the opm module is not present"""
 
