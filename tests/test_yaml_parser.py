@@ -8,7 +8,7 @@ from everest.config import EverestConfig
 from everest.simulator.everest2res import everest2res
 from ruamel.yaml import YAML
 
-from tests.utils import MockParser, relpath, tmpdir, skipif_no_everest_models
+from tests.utils import MockParser, relpath, skipif_no_everest_models, tmpdir
 
 snake_oil_folder = relpath("test_data", "snake_oil")
 

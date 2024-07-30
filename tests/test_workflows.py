@@ -5,7 +5,7 @@ import pytest
 from everest.config import EverestConfig
 from everest.suite import _EverestWorkflow
 
-from tests.utils import relpath, tmpdir, skipif_no_everest_models
+from tests.utils import relpath, skipif_no_everest_models, tmpdir
 
 CONFIG_DIR = relpath("test_data", "mocked_test_case")
 CONFIG_FILE = "config_workflow.yml"

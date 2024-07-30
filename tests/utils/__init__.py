@@ -1,4 +1,5 @@
 import contextlib
+import importlib.util
 import logging
 import os
 import pathlib
@@ -37,14 +38,10 @@ def skipif_no_simulator(function):
 
 
 def skipif_no_everest_models(function):
-    """Decorator to skip a test if everest-models is not available
-    """
-    skip = False
-    try:
-        import everest_models
-    except ImportError:
-        skip = True
-    return pytest.mark.skipif(skip, reason="everest-models not found")(function)
+    """Decorator to skip a test if everest-models is not available"""
+    spec = importlib.util.find_spec("everest_models")
+    exists = spec is None
+    return pytest.mark.skipif(exists, reason="everest-models not found")(function)
 
 
 def hide_opm(function):

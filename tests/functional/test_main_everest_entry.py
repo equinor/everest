@@ -13,7 +13,7 @@ from everest.detached import (
 )
 from ruamel.yaml import YAML
 from seba_sqlite.snapshot import SebaSnapshot
-from tests.utils import capture_streams, relpath, tmpdir, skipif_no_everest_models
+from tests.utils import capture_streams, relpath, skipif_no_everest_models, tmpdir
 
 CONFIG_PATH = relpath("..", "examples", "math_func")
 CONFIG_FILE_MINIMAL = "config_minimal.yml"
