@@ -40,7 +40,6 @@ jobs:
 
     - name: Install Everest and dependencies
       run: |
-        pip install git+https://github.com/equinor/everest-models.git
         pip install .[test,docs]
 
     - name: Install latest ert main
