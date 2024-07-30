@@ -58,15 +58,16 @@ jobs:
       run: |
         pytest tests -n 4 -m "integration_test" --dist loadgroup
 
-    - name: Build Documentation
-      if: matrix.test_type == 'doc'
-      run: |
-        mkdir tmp
-        sphinx-build -W -b html -d tmp/doctrees docs/source {envtmpdir}/html
-
     - name: Run UI Tests
       if: matrix.test_type == 'ui-test'
       env:
         QT_QPA_PLATFORM: 'minimal'
       run: |
         python -m pytest  -m "ui_test"
+
+    - name: Build Documentation
+      if: matrix.test_type == 'doc'
+      run: |
+        pip install git+https://github.com/equinor/everest-models.git
+        mkdir tmp
+        sphinx-build -W -b html -d tmp/doctrees docs/source {envtmpdir}/html
