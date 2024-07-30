@@ -582,6 +582,7 @@ def test_egg_model_convert():
 @hide_opm
 @tmpdir(relpath(ROOT))
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 def test_egg_model_convert_no_opm():
     config = EverestConfig.load_file(CONFIG_FILE)
     ert_config = everest2res(config)
@@ -598,6 +599,7 @@ def test_egg_model_convert_no_opm():
 
 
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 @tmpdir(relpath(ROOT))
 def test_opm_fail_default_summary_keys():
     pytest.importorskip("everest_models")
@@ -623,6 +625,7 @@ def test_opm_fail_default_summary_keys():
 
 
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 @skipif_no_opm
 @tmpdir(relpath(ROOT))
 def test_opm_fail_explicit_summary_keys():
@@ -668,6 +671,7 @@ def test_opm_fail_explicit_summary_keys():
 
 
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 @pytest.mark.integration_test
 @tmpdir(relpath(ROOT))
 def test_init_egg_model():
@@ -677,6 +681,7 @@ def test_init_egg_model():
 
 
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 @skipif_no_simulator
 @pytest.mark.simulation_test
 @tmpdir(relpath(ROOT))
@@ -783,6 +788,7 @@ def test_run_egg_model():
 
 
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 @skipif_no_opm
 @tmpdir(relpath(ROOT))
 def test_egg_model_wells_json_output_no_none():

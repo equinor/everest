@@ -169,6 +169,7 @@ controls -> 0 -> initial_guess
 @tmpdir(EGG_CONFIG_PATH)
 @pytest.mark.fails_on_macos_github_workflow
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 def test_everest_main_configdump_entry():
     # Setup command line arguments
     with capture_streams() as (out, err):

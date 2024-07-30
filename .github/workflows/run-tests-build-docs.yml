@@ -25,7 +25,7 @@ jobs:
       matrix:
         python-version: ['3.8', '3.11', '3.12']
         os: [ubuntu-22.04]
-        test_type: ['doc', 'ui-test', 'test', 'integration-test']
+        test_type: ['doc', 'ui-test', 'test', 'integration-test', 'everest-models-test']
         ert_version: ['release', 'main']
     runs-on: ${{ matrix.os }}
     steps:
@@ -71,3 +71,9 @@ jobs:
         pip install git+https://github.com/equinor/everest-models.git
         mkdir tmp
         sphinx-build -W -b html -d tmp/doctrees docs/source {envtmpdir}/html
+
+    - name: Run tests requiring everest-models
+      if: matrix.test_type == 'everest-models-test'
+      run: |
+        pip install git+https://github.com/equinor/everest-models.git
+        python -m pytest tests -n 4 -m everest_models_test --dist loadgroup

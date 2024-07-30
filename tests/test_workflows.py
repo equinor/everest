@@ -28,6 +28,7 @@ def test_workflow_run():
 
 
 @pytest.mark.integration_test
+@pytest.mark.everest_models_test
 @skipif_no_everest_models
 @pytest.mark.parametrize("config", ("array", "index"))
 def test_state_modifier_workflow_run(

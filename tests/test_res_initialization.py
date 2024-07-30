@@ -401,6 +401,7 @@ def test_install_data_no_init():
 
 @skipif_no_opm
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 @pytest.mark.integration_test
 @tmpdir(relpath("../examples/egg"))
 def test_summary_default():
@@ -434,6 +435,7 @@ def test_summary_default():
 @pytest.mark.integration_test
 @hide_opm
 @skipif_no_everest_models
+@pytest.mark.everest_models_test
 @pytest.mark.fails_on_macos_github_workflow
 @tmpdir(relpath("../examples/egg"))
 def test_summary_default_no_opm():

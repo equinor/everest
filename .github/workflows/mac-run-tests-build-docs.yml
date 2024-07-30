@@ -35,7 +35,7 @@ jobs:
           - os: 'macos-13'
             python-version: '3.12'
 
-        test_type: ['doc', 'test', 'integration-test']
+        test_type: ['doc', 'test', 'integration-test', 'everest-models-test']
         ert_version: ['release', 'main']
     runs-on: ${{ matrix.os }}
     steps:
@@ -55,8 +55,7 @@ jobs:
 
     - name: Install Everest and dependencies
       run: |
-        pip install .[test]
-        pip install .
+        pip install .[test, docs]
 
     - name: Install latest ert main
       if: matrix.ert_version == 'main'
@@ -66,19 +65,22 @@ jobs:
     - name: Run Tests
       if: matrix.test_type == 'test'
       run: |
-        pip install .[test]
         python -m pytest tests -n 4 -m "not ui_test and not integration_test and not fails_on_macos_github_workflow" --dist loadgroup
 
     - name: Run Integration Tests
       if: matrix.test_type == 'integration-test'
       run: |
-        pip install .[test]
         python -m pytest tests -n 4 -m "integration_test and not fails_on_macos_github_workflow" --dist loadgroup
 
     - name: Build Documentation
       if: matrix.test_type == 'doc'
       run: |
-        pip install .[docs]
         pip install git+https://github.com/equinor/everest-models.git
         mkdir tmp
         sphinx-build -W -b html -d tmp/doctrees docs/source {envtmpdir}/html
+
+    - name: Run tests requiring everest-models
+      if: matrix.test_type == 'everest-models-test'
+      run: |
+        pip install git+https://github.com/equinor/everest-models.git
+        python -m pytest tests -n 4 -m everest_models_test --dist loadgroup
