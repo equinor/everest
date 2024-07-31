@@ -116,6 +116,7 @@ ieverest = ["*.ui"]
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers"
 markers = [
+    "everest_models_test",
     "integration_test",
     "simulation_test",
     "ui_test",
