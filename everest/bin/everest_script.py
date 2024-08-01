@@ -32,8 +32,8 @@ from .utils import (
 
 def everest_entry(args=None):
     """Entry point for running an optimization."""
-
-    options = setup_args(args)
+    parser = _build_args_parser()
+    options = parser.parse_args(args)
 
     if options.debug:
         logging.getLogger().setLevel(logging.DEBUG)
@@ -52,11 +52,11 @@ def everest_entry(args=None):
     run_everest(options)
 
 
-def setup_args(argv):
-    """Parse the given argv and return the options object."""
+def _build_args_parser():
+    """Build arg parser"""
 
     arg_parser = argparse.ArgumentParser(
-        description="Everest console runner",
+        description="Everest console runner, start an optimization case based on a given config file",
         usage="everest run <config_file> [arguments]",
     )
     arg_parser.add_argument(
@@ -70,11 +70,6 @@ def setup_args(argv):
         help="Run the optimization even though results are already available",
     )
     arg_parser.add_argument(
-        "--kill",
-        action="store_true",
-        help="Option removed. Please use `everest kill <config_file>`",
-    )
-    arg_parser.add_argument(
         "--debug", action="store_true", help="Display debug information in the terminal"
     )
     arg_parser.add_argument(
@@ -83,7 +78,7 @@ def setup_args(argv):
         help="Display all jobs executed from the forward model",
     )
 
-    return arg_parser.parse_args(args=argv)
+    return arg_parser
 
 
 def _kill_everest(options):
