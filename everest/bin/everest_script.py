@@ -81,17 +81,6 @@ def _build_args_parser():
     return arg_parser
 
 
-def _kill_everest(options):
-    config_file = options.config.config_file
-    print("=" * 80)
-    print(
-        "The `everest run --kill` option has been removed.\n"
-        "To kill the running optimization use command:\n"
-        f"  `everest kill {config_file}`"
-    )
-    print("=" * 80)
-
-
 def _run_everest(options, ert_config, storage):
     with PluginSiteConfigEnv():
         context = start_server(options.config, ert_config, storage)
@@ -103,9 +92,6 @@ def _run_everest(options, ert_config, storage):
 
 
 def run_everest(options):
-    if options.kill:
-        _kill_everest(options)
-        return
     logger = logging.getLogger("everest_main")
     server_state = everserver_status(options.config)
 

@@ -49,6 +49,7 @@ def _create_dump_action(dumps, extended=False):
 
     return _DumpAction
 
+
 def _build_args_parser():
     """Build arg parser"""
     arg_parser = argparse.ArgumentParser(
@@ -63,16 +64,12 @@ def _build_args_parser():
     arg_parser.add_argument("command", help="Subcommand to run")
     arg_parser.add_argument(
         "--docs",
-        action=_create_dump_action(
-            docs.generate_docs_pydantic_to_rst, extended=False
-        ),
+        action=_create_dump_action(docs.generate_docs_pydantic_to_rst, extended=False),
         help="dump everest config documentation and exit",
     )
     arg_parser.add_argument(
         "--manual",
-        action=_create_dump_action(
-            docs.generate_docs_pydantic_to_rst, extended=True
-        ),
+        action=_create_dump_action(docs.generate_docs_pydantic_to_rst, extended=True),
         help="dump extended everest config documentation and exit",
     )
     arg_parser.add_argument(
