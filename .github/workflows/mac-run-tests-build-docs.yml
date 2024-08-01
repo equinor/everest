@@ -55,7 +55,7 @@ jobs:
 
     - name: Install Everest and dependencies
       run: |
-        pip install .[test, docs]
+        pip install .[test,docs]
 
     - name: Install latest ert main
       if: matrix.ert_version == 'main'
