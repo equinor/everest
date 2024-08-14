@@ -22,4 +22,4 @@ repos:
       name: pylint
       language: system
       types: [python]
-      entry: "python -m pylint everest ieverest tests"
+      entry: "python -m pylint src tests"

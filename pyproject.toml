@@ -75,7 +75,7 @@ docs = [
     "furo",
 ]
 
-[project.scripts]
+[project.entry-points."console_scripts"]
 everest = "everest.bin.main:start_everest"
 everserver = "everest.detached.jobs.everserver:main"
 recovery_factor = "everest.jobs.scripts.recovery_factor:main"
@@ -86,28 +86,6 @@ wdfilter = "everest.jobs.scripts.wdfilter:main"
 wdreorder = "everest.jobs.scripts.wdreorder:main"
 wdset = "everest.jobs.scripts.wdset:main"
 wdupdate = "everest.jobs.scripts.wdupdate:main"
-
-[tool.setuptools]
-packages = [
-    "everest",
-    "everest.api",
-    "everest.bin",
-    "everest.data",
-    "everest.detached",
-    "everest.docs",
-    "everest.jobs",
-    "everest.linting",
-    "everest.optimizer",
-    "everest.plugins",
-    "everest.queue_driver",
-    "everest.simulator",
-    "everest.templates",
-    "everest.util",
-    "ieverest",
-    "ieverest.bin",
-    "ieverest.io",
-    "ieverest.widgets",
-]
 
 [tool.setuptools.package-data]
 everest = ["data/**/*", "*.tmpl", "detached/jobs/everserver"]
@@ -127,13 +105,16 @@ log_cli = "false"
 asyncio_mode = "auto"
 
 [tool.setuptools_scm]
-write_to = "everest/version.py"
+write_to = "src/everest/version.py"
 
 [tool.setuptools.dynamic]
 version = { attr = "everest.version.__version__" }
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.ruff]
-src = ["everest"]
+src = ["src/everest"]
 line-length = 88
 
 [tool.ruff.lint]
