@@ -51,11 +51,13 @@ jobs:
     - name: Run Tests
       if: matrix.test_type == 'test'
       run: |
+        pip list
         pytest tests -n 4 -m "not ui_test and not integration_test" --dist loadgroup -sv
 
     - name: Run Integration Tests
       if: matrix.test_type == 'integration-test'
       run: |
+        pip list
         pytest tests -n 4 -m "integration_test" --dist loadgroup
 
     - name: Run UI Tests
