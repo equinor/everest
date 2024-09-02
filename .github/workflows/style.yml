@@ -22,7 +22,7 @@ jobs:
       - name: Run mypy
         if: ${{ always() }}
         run: |
-          mypy everest
+          mypy src/everest
       - name: Run style check
         if: ${{ always() }}
         run: |
