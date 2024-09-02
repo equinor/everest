@@ -88,6 +88,7 @@ wdset = "everest.jobs.scripts.wdset:main"
 wdupdate = "everest.jobs.scripts.wdupdate:main"
 
 [tool.setuptools]
+package-dir = {"" = "src"}
 packages = [
     "everest",
     "everest.api",
@@ -126,7 +127,7 @@ log_cli = "false"
 asyncio_mode = "auto"
 
 [tool.setuptools_scm]
-write_to = "everest/version.py"
+write_to = "src/everest/version.py"
 
 [tool.setuptools.dynamic]
 version = { attr = "everest.version.__version__" }

@@ -22,7 +22,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-everest/version.py
+src/everest/version.py
 storage/*
 docs/html
 docs/doctrees
