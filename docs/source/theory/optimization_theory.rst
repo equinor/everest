@@ -1,12 +1,8 @@
 .. _cha_theory:
 
-******
-Theory
-******
-
-
-Optimization
-============
+*******************
+Optimization theory
+*******************
 
 Have you being recently tasked with some aspect of field development or operational planning? If so, you have maybe come across the following problem. Imagine you have been tasked with designing the drilling schedule for three potential wells, two producers *Well-A* and *Well-B*, and an injector *Well-C*. The complexity being you can only drill one well at a time.
 Thus the question is "What is the optimal order to drill these three potential wells?". The answer naturally depends on:
@@ -23,7 +19,8 @@ For this simple example of 3 wells the number of possibilities and scenarios to 
 Finding or obtaining the optimal order for the wells to be drilled is a tedious task. Solutions to such problems can be obtained using computationally efficient optimization techniques. So what is Optimization and these Optimization techniques?
 
 The optimization process
-------------------------
+########################
+
 **Optimization** is the process of finding the best possible solution for a particular problem. For petroleum/reservoir engineering, such problems would primarily imply
 
 * Can I improve the ultimate oil recovery from the reservoir being produced? or
@@ -52,7 +49,7 @@ Thus optimization is the process which aims to find an *optimal* set of controls
 .. _en-opt-label:
 
 Ensemble optimization (EnOpt)
------------------------------
+#############################
 
 There are numerous methods for model-based optimization for petroleum/reservoir engineering objectives.
 These methods can be classified into two general classes, *derivative-based* and *derivative free* techniques.
@@ -90,8 +87,10 @@ Note that a larger number of blue dots will increase the quality of the gradient
 Traditionally many studies have used 10-50 perturbed controls during the optimization process to estimate the gradient.
 These studies have used a single model realization (i.e. a single geological representation) of the reservoir which may not always be an accurate representation of the real reservoir system.
 
-Robust Optimization: Stochastic Simplex Gradients (StoSAG)
-==========================================================
+
+Stochastic Simplex Gradients (StoSAG)
+#####################################
+
 In reality, geological and reservoir modeling process is fraught with uncertainties since a reservoir is modeled using uncertain interpretations based on uncertain data sources such as seismic, well logs etc.
 Thus to achieve optimization solutions which have practical value it is imperative to account for uncertainty within the optimization framework.
 One way of representing the uncertainty present is to generate multiple realization models, or an ensemble of models.
@@ -128,7 +127,7 @@ Everest supports the StoSAG formulation for estimating the gradient in robust op
 
 
 Multi-objective optimization (MOO)
-===================================
+##################################
 
 Most real-world design and planning problems must also satisfy multiple objectives. Very often these objectives are in conflict with each other, which means that one objective must be decreased to increase the other objective. In such cases it is not trivial to find solutions which satisfy different objectives. When the problem includes two or more performance indicators, Everest employs the widely used weighted sum method to balance the objective functions. This approach aims to optimize a weighted objective function that combines multiple objectives in a single function according to:
 

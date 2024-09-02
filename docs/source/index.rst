@@ -28,6 +28,7 @@ This guide serves as documentation for the *Everest* decision-making tool
    cli
    config
    config_reference
+   visualization
    optimization_backends
    sampler_backends
    forward_model_jobs
@@ -38,7 +39,7 @@ This guide serves as documentation for the *Everest* decision-making tool
    :hidden:
    :caption: Theory
 
-   theory
+   theory/index
 
 .. toctree::
    :hidden:
