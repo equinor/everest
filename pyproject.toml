@@ -96,7 +96,6 @@ packages = [
     "everest.detached",
     "everest.docs",
     "everest.jobs",
-    "everest.linting",
     "everest.optimizer",
     "everest.plugins",
     "everest.queue_driver",
