@@ -53,6 +53,7 @@ test = [
     "pytest-rerunfailures",
     "mock",
     "pytest",
+    "pytest-cov",
     "pytest-qt>=4",
     "pytest-mock",
     "pytest-xdist",
