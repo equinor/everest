@@ -35,8 +35,8 @@ dependencies = [
     "PyQt5",
     "colorama",
     "numpy<2",
-    "ropt[pandas]<0.6",
-    "ropt-dakota<0.6",
+    "ropt[pandas]<0.7",
+    "ropt-dakota<0.7",
     "seba-sqlite",
     "setuptools; python_version >= '3.12'",
 ]
