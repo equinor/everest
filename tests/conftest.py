@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 from copy import deepcopy
 from pathlib import Path
 from typing import Callable, Dict, Iterator, Optional, Union
@@ -81,3 +82,25 @@ def control_config(
     config = deepcopy(control_data_no_variables)
     config["variables"] = request.param
     return ControlConfig.model_validate(config)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def hide_window(request):
+    if request.config.getoption("--show-gui"):
+        yield
+        return
+
+    old_value = os.environ.get("QT_QPA_PLATFORM")
+    if sys.platform == "darwin":
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
+    else:
+        os.environ["QT_QPA_PLATFORM"] = "minimal"
+    yield
+    if old_value is None:
+        del os.environ["QT_QPA_PLATFORM"]
+    else:
+        os.environ["QT_QPA_PLATFORM"] = old_value
+
+
+def pytest_addoption(parser):
+    parser.addoption("--show-gui", action="store_true", default=False)
