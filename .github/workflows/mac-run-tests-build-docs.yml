@@ -65,12 +65,12 @@ jobs:
     - name: Run Tests
       if: matrix.test_type == 'test'
       run: |
-        python -m pytest tests -n 4 -m "not ui_test and not integration_test and not fails_on_macos_github_workflow" --dist loadgroup
+        python -m pytest tests/everest -n 4 -m "not ui_test and not integration_test and not fails_on_macos_github_workflow" --dist loadgroup
 
     - name: Run Integration Tests
       if: matrix.test_type == 'integration-test'
       run: |
-        python -m pytest tests -n 4 -m "integration_test and not fails_on_macos_github_workflow" --dist loadgroup
+        python -m pytest tests/everest -n 4 -m "integration_test and not fails_on_macos_github_workflow" --dist loadgroup
 
     - name: Build Documentation
       if: matrix.test_type == 'doc'
