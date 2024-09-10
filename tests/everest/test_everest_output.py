@@ -8,6 +8,7 @@ from ert.config import ErtConfig
 from ert.storage import open_storage
 from everest.config import EverestConfig
 from everest.detached import generate_everserver_ert_config, start_server
+from everest.simulator.everest_to_ert import everest_to_ert_config
 from everest.strings import (
     DEFAULT_OUTPUT_DIR,
     DETACHED_NODE_DIR,
@@ -17,6 +18,28 @@ from everest.suite import _EverestWorkflow
 from everest.util import makedirs_if_needed
 
 from tests.everest.utils import relpath, tmpdir
+
+
+@pytest.mark.redundant_test  # superseded by test_math_func_advanced and _multiobj
+@tmpdir(relpath("..", "examples", "math_func"))
+def test_that_one_experiment_creates_one_ensemble_per_batch():
+    config = EverestConfig.load_file("config_minimal.yml")
+    workflow = _EverestWorkflow(config)
+    assert workflow is not None
+
+    workflow.start_optimization()
+
+    batches = os.listdir(config.simulation_dir)
+    ert_config = ErtConfig.with_plugins().from_dict(everest_to_ert_config(config))
+    enspath = ert_config.ens_path
+
+    with open_storage(enspath, mode="r") as storage:
+        experiments = [*storage.experiments]
+        assert len(experiments) == 1
+        [experiment] = experiments
+
+        ensemble_names = {ens.name for ens in experiment.ensembles}
+        assert ensemble_names == set(batches)
 
 
 @pytest.mark.integration_test
