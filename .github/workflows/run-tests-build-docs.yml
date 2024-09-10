@@ -42,11 +42,10 @@ jobs:
       run: |
         pip install .[test,docs]
 
-    - name: Install latest ert main
-      if: matrix.ert_version == 'main'
+    - name: Install ERT PR (yngve-sk)
       run: |
         sudo apt-get install build-essential
-        pip install git+https://github.com/equinor/ert.git
+        pip install git+https://github.com/yngve-sk/ert.git@everest-one-experiment-per-enopt-run
 
     - name: Run Tests
       if: matrix.test_type == 'test'
