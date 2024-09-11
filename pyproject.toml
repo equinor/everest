@@ -31,7 +31,7 @@ dependencies = [
     "pluggy",
     "decorator",
     "resdata",
-    "ert==11.0.0b1",
+    "ert>=11.0.0b1",
     "PyQt5",
     "colorama",
     "numpy<2",
