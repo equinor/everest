@@ -28,6 +28,20 @@ _SLURM_OPTIONS = [
     (ConfigKeys.SLURM_INCLUDE_HOST_OPTION, "INCLUDE_HOST"),
 ]
 
+_TORQUE_OPTIONS = [
+    (ConfigKeys.CORES, "MAX_RUNNING"),
+    (ConfigKeys.TORQUE_QSUB_CMD, "QSUB_CMD"),
+    (ConfigKeys.TORQUE_QSTAT_CMD, "QSTAT_CMD"),
+    (ConfigKeys.TORQUE_QDEL_CMD, "QDEL_CMD"),
+    (ConfigKeys.TORQUE_QUEUE_NAME, "QUEUE"),
+    (ConfigKeys.TORQUE_CLUSTER_LABEL, "CLUSTER_LABEL"),
+    (ConfigKeys.CORES_PER_NODE, "NUM_CPUS_PER_NODE"),
+    (ConfigKeys.TORQUE_MEMORY_PER_JOB, "MEMORY_PER_JOB"),
+    (ConfigKeys.TORQUE_KEEP_QSUB_OUTPUT, "KEEP_QSUB_OUTPUT"),
+    (ConfigKeys.TORQUE_SUBMIT_SLEEP, "SUBMIT_SLEEP"),
+    (ConfigKeys.TORQUE_PROJECT_CODE, "PROJECT_CODE"),
+]
+
 
 def _extract_ert_queue_options_from_simulator_config(
     simulator: Optional[SimulatorConfig], queue_system
@@ -51,10 +65,14 @@ def _extract_ert_queue_options_from_simulator_config(
         return simulator.extract_ert_queue_options(
             queue_system=QueueSystem.SLURM, everest_to_ert_key_tuples=_SLURM_OPTIONS
         )
+    elif queue_system == ConfigKeys.TORQUE:
+        return simulator.extract_ert_queue_options(
+            queue_system=QueueSystem.TORQUE, everest_to_ert_key_tuples=_TORQUE_OPTIONS
+        )
 
     raise KeyError(
         f"Invalid queue_system: {queue_system}, "
-        "expected one of: ['lsf', 'local', 'slurm']"
+        "expected one of: ['lsf', 'local', 'slurm', 'torque']"
     )
 
 
