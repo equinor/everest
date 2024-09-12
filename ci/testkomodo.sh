@@ -3,7 +3,6 @@ copy_test_files () {
     cp -r $CI_SOURCE_ROOT/tests $CI_TEST_ROOT/tests
     cp -r $CI_SOURCE_ROOT/docs $CI_TEST_ROOT/docs
     cp -r $CI_SOURCE_ROOT/examples $CI_TEST_ROOT/examples
-    cp $CI_SOURCE_ROOT/.pylintrc $CI_TEST_ROOT
 }
 
 
