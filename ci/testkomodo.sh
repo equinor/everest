@@ -24,9 +24,5 @@ start_tests () {
 }
 
 install_test_dependencies () {
-    if [ -f "test_requirements.txt" ]; then
-        pip install -r test_requirements.txt
-    else
-        pip install ".[test]"
-    fi
+    pip install ".[test]"
 }
