@@ -1,5 +1,9 @@
 from ert.config import ErtConfig
 from ert.storage import open_storage
+from pydantic import ValidationError
+from qtpy.QtCore import QObject, QThread, Signal
+from qtpy.QtWidgets import QFileDialog, QMessageBox, qApp
+
 from everest.config import EverestConfig, validation_utils
 from everest.detached import (
     ServerStatus,
@@ -19,10 +23,6 @@ from everest.plugins.site_config_env import PluginSiteConfigEnv
 from everest.simulator import Status
 from everest.strings import OPT_PROGRESS_ID, SIM_PROGRESS_ID
 from everest.util import configure_logger, makedirs_if_needed
-from pydantic import ValidationError
-from qtpy.QtCore import QObject, QThread, Signal
-from qtpy.QtWidgets import QFileDialog, QMessageBox, qApp
-
 from ieverest import settings
 from ieverest.io import QtDialogsOut, QtStatusBarOut
 from ieverest.main_window import MainWindow

@@ -5,17 +5,18 @@ from unittest.mock import patch
 import pandas as pd
 import pytest
 from ert.config import ErtConfig
-from everest import MetaDataColumnNames as MDCN
-from everest import export
-from everest.bin.everload_script import everload_entry
-from everest.config import EverestConfig
-from everest.strings import STORAGE_DIR
 from tests.everest.utils import (
     capture_streams,
     create_cached_mocked_test_case,
     relpath,
     tmpdir,
 )
+
+from everest import MetaDataColumnNames as MDCN
+from everest import export
+from everest.bin.everload_script import everload_entry
+from everest.config import EverestConfig
+from everest.strings import STORAGE_DIR
 
 CONFIG_PATH = relpath("test_data", "mocked_test_case")
 CONFIG_FILE = "mocked_multi_batch.yml"

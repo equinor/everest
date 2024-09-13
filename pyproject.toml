@@ -135,7 +135,7 @@ write_to = "src/everest/version.py"
 version = { attr = "everest.version.__version__" }
 
 [tool.ruff]
-src = ["everest"]
+src = ["src"]
 line-length = 88
 
 [tool.ruff.lint]

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Callable, Dict, Iterator, Optional, Union
 
 import pytest
+
 from everest.config.control_config import ControlConfig
 
 

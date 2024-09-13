@@ -7,6 +7,7 @@ import pytest
 import requests
 from ert.config import ErtConfig, QueueSystem
 from ert.storage import open_storage
+
 from everest.config import EverestConfig
 from everest.config.server_config import ServerConfig
 from everest.config.simulator_config import SimulatorConfig
@@ -36,7 +37,6 @@ from everest.strings import (
     SIMULATION_DIR,
 )
 from everest.util import makedirs_if_needed
-
 from tests.everest.utils import relpath, tmpdir
 
 

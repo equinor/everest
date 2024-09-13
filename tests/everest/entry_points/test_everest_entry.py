@@ -4,6 +4,7 @@ from functools import partial
 from unittest.mock import PropertyMock, patch
 
 import pytest
+
 from everest.bin.everest_script import everest_entry
 from everest.bin.kill_script import kill_entry
 from everest.bin.monitor_script import monitor_entry
@@ -17,7 +18,6 @@ from everest.detached import (
 from everest.jobs import shell_commands
 from everest.simulator import JOB_SUCCESS
 from ieverest.bin.ieverest_script import ieverest_entry
-
 from tests.everest.utils import capture_streams, relpath, tmpdir
 
 CONFIG_PATH = relpath("..", "..", "examples", "math_func")

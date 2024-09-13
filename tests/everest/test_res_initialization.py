@@ -2,9 +2,10 @@ import itertools
 import os
 from unittest.mock import patch
 
-import everest
 import pytest
 from ert.config import ErtConfig
+
+import everest
 from everest import ConfigKeys
 from everest.config import EverestConfig
 from everest.config.install_data_config import InstallDataConfig
@@ -13,7 +14,6 @@ from everest.config.well_config import WellConfig
 from everest.config.workflow_config import WorkflowConfig
 from everest.simulator.everest_to_ert import everest_to_ert_config
 from everest.util.forward_models import collect_forward_models
-
 from tests.everest.utils import (
     everest_default_jobs,
     hide_opm,

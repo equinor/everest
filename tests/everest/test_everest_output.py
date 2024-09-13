@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 from ert.config import ErtConfig
 from ert.storage import open_storage
+
 from everest.config import EverestConfig
 from everest.detached import generate_everserver_ert_config, start_server
 from everest.strings import (
@@ -15,7 +16,6 @@ from everest.strings import (
 )
 from everest.suite import _EverestWorkflow
 from everest.util import makedirs_if_needed
-
 from tests.everest.utils import relpath, tmpdir
 
 

@@ -3,6 +3,7 @@ import shutil
 from unittest.mock import patch
 
 import pytest
+
 from everest.plugins import hook_impl as everest_implementation
 from everest.plugins import hookimpl
 from everest.plugins.hook_manager import EverestPluginManager
