@@ -2,13 +2,13 @@ import os
 import tempfile
 from pathlib import Path
 
-import everest
 import pytest
+
+import everest
 from everest import ConfigKeys
 from everest.config import EverestConfig
 from everest.config_file_loader import yaml_file_to_substituted_config_dict
 from everest.util.forward_models import collect_forward_models
-
 from tests.everest.test_config_validation import has_error
 from tests.everest.utils import relpath
 

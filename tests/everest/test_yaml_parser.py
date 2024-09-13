@@ -1,13 +1,13 @@
 import os
 from pathlib import Path
 
-import everest
 import pytest
+from ruamel.yaml import YAML
+
+import everest
 from everest import ConfigKeys
 from everest.config import EverestConfig
 from everest.simulator.everest_to_ert import everest_to_ert_config
-from ruamel.yaml import YAML
-
 from tests.everest.utils import MockParser, relpath, skipif_no_everest_models, tmpdir
 
 snake_oil_folder = relpath("test_data", "snake_oil")

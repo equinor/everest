@@ -2,16 +2,16 @@ import json
 import os
 import shutil
 
-import everest
 import pytest
 from ert.config import ErtConfig, QueueSystem
+
+import everest
 from everest.config import EverestConfig
 from everest.config.export_config import ExportConfig
 from everest.config_keys import ConfigKeys
 from everest.export import MetaDataColumnNames
 from everest.plugins.site_config_env import PluginSiteConfigEnv
 from everest.simulator.everest_to_ert import everest_to_ert_config
-
 from tests.everest.utils import (
     everest_default_jobs,
     hide_opm,
