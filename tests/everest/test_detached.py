@@ -33,7 +33,7 @@ from everest.simulator.everest_to_ert import everest_to_ert_config
 from everest.strings import (
     DEFAULT_OUTPUT_DIR,
     DETACHED_NODE_DIR,
-    EVEREST_SERVER,
+    EVEREST_SERVER_CONFIG,
     SIMULATION_DIR,
 )
 from everest.util import makedirs_if_needed
@@ -190,9 +190,9 @@ def _get_reference_config():
     cwd = os.getcwd()
     reference_config.update(
         {
-            "INSTALL_JOB": [(EVEREST_SERVER, _EVERSERVER_JOB_PATH)],
+            "INSTALL_JOB": [(EVEREST_SERVER_CONFIG, _EVERSERVER_JOB_PATH)],
             "QUEUE_SYSTEM": "LOCAL",
-            "JOBNAME": EVEREST_SERVER,
+            "JOBNAME": EVEREST_SERVER_CONFIG,
             "MAX_SUBMIT": 1,
             "NUM_REALIZATIONS": 1,
             "RUNPATH": os.path.join(
@@ -203,13 +203,13 @@ def _get_reference_config():
             ),
             "SIMULATION_JOB": [
                 [
-                    EVEREST_SERVER,
+                    EVEREST_SERVER_CONFIG,
                     "--config-file",
                     os.path.join(cwd, "config_minimal.yml"),
                 ],
             ],
             "ENSPATH": os.path.join(
-                cwd, DEFAULT_OUTPUT_DIR, DETACHED_NODE_DIR, EVEREST_SERVER
+                cwd, DEFAULT_OUTPUT_DIR, DETACHED_NODE_DIR, EVEREST_SERVER_CONFIG
             ),
             "RUNPATH_FILE": os.path.join(
                 cwd, DEFAULT_OUTPUT_DIR, DETACHED_NODE_DIR, ".res_runpath_list"
