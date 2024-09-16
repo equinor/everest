@@ -69,6 +69,6 @@ You can build the documentation after installation by running
 ```bash
 pip install -r test_requirements.txt
 mkdir tmp
-sphinx-build -W -b html -d tmp/doctrees docs/source tmp/html
+sphinx-build -W -b html -d tmp/doctrees docs/everest tmp/html
 ```
 and then open the generated `./tmp/html/index.html` in a browser.
