@@ -77,7 +77,7 @@ jobs:
       run: |
         pip install git+https://github.com/equinor/everest-models.git
         mkdir tmp
-        sphinx-build -W -b html -d tmp/doctrees docs/source {envtmpdir}/html
+        sphinx-build -W -b html -d tmp/doctrees docs/everest {envtmpdir}/html
 
     - name: Run tests requiring everest-models
       if: matrix.test_type == 'everest-models-test'
