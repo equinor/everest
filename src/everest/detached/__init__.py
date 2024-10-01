@@ -12,6 +12,7 @@ import pkg_resources
 import requests
 from ert import BatchContext, BatchSimulator
 from ert.config import ErtConfig, QueueSystem
+from ert.storage import Storage
 from seba_sqlite.exceptions import ObjectNotFoundError
 from seba_sqlite.snapshot import SebaSnapshot
 
@@ -55,7 +56,7 @@ _server = None
 _context = None
 
 
-def start_server(config: EverestConfig, ert_config: ErtConfig, storage):
+def start_server(config: EverestConfig, ert_config: ErtConfig, storage: Storage):
     """
     Start an Everest server running the optimization defined in the config
     """
@@ -92,8 +93,14 @@ def start_server(config: EverestConfig, ert_config: ErtConfig, storage):
             "Failed to save optimization config: {}".format(e)
         )
 
+    experiment = storage.create_experiment(
+        name=f"DetachedEverest@{datetime.now().strftime('%Y-%m-%d@%H:%M:%S')}",
+        parameters=[],
+        responses=[],
+    )
+
     _server = BatchSimulator(ert_config, {}, [])
-    _context = _server.start("dispatch_server", [(0, {})], storage)
+    _context = _server.start("dispatch_server", [(0, {})], experiment)
 
     return _context
 
