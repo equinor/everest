@@ -4,6 +4,9 @@
 
 # Everest™
 
+> :warning: **The Everest project development has moved into https://github.com/equinor/ert,
+> this repository is deprecated and is no longer maintained. All issues have been moved into
+> the ert repository, and new issues must be created there.**
 
 The primary goal of the Everest tool is to find *optimal* well planning and production strategies by utilizing an ensemble of reservoir models (e.g., an ensemble of geologically-consistent models). This will enable robust decisions about drilling schedule and well placement, in order to achieve results of significant practical value.
 
